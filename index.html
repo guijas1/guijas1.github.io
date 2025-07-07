@@ -239,6 +239,8 @@
 
     function main() {
       const params = getHashParams();
+      // Supabase pode enviar type=signup, type=recovery, type=invite, type=magiclink, type=email_change, type=reauthentication
+      // Alguns links podem vir como type=email_change ou type=emailChange
       const type = (params.type || '').toLowerCase();
 
       switch (type) {
@@ -255,6 +257,7 @@
           renderMagicLink();
           break;
         case 'email_change':
+        case 'emailchange':
           renderEmailChange();
           break;
         case 'reauthentication':
