@@ -77,11 +77,21 @@
       color: #64748b;
       font-size: 12px;
     }
-    .hidden { display: none; }
+    .debug {
+      background: #0f172a;
+      color: #38bdf8;
+      font-size: 12px;
+      margin-bottom: 16px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px dashed #334155;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="main-container">
+    <div id="debug" class="debug" style="display:none"></div>
     <h2 id="main-title">Ação de Conta</h2>
     <div id="main-content"></div>
     <div id="msg" class="msg" style="display: none;"></div>
@@ -182,9 +192,8 @@
       document.getElementById('main-content').innerHTML = `
         <p style="color: #38bdf8; margin-bottom: 24px;">
           Você recebeu um convite para acessar o Reporte Diário ONS.<br>
-          Clique abaixo para baixar o aplicativo ou acessar o sistema.
+          Clique abaixo para criar sua conta e acessar o sistema.
         </p>
-        <a href="https://seu-link-de-download.com" class="btn" target="_blank">Baixar Aplicativo</a>
         <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
       `;
       hideMessage();
@@ -237,8 +246,22 @@
       hideMessage();
     }
 
+    function showDebugInfo(params, hash) {
+      const debugDiv = document.getElementById('debug');
+      debugDiv.style.display = 'block';
+      debugDiv.innerHTML = `
+        <b>Debug:</b><br>
+        <b>Hash:</b> ${hash}<br>
+        <b>Tipo detectado:</b> ${params.type || '(não encontrado)'}<br>
+        <b>Access Token:</b> ${params.access_token ? params.access_token.substring(0, 8) + '...' : '(não encontrado)'}
+      `;
+    }
+
     function main() {
+      const hash = window.location.hash;
       const params = getHashParams();
+      showDebugInfo(params, hash);
+
       // Supabase pode enviar type=signup, type=recovery, type=invite, type=magiclink, type=email_change, type=reauthentication
       // Alguns links podem vir como type=email_change ou type=emailChange
       const type = (params.type || '').toLowerCase();
