@@ -55,6 +55,19 @@
     .error {
       color: #ef4444;
     }
+    .debug {
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 32px;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -69,12 +82,42 @@
     </form>
     <div id="msg" class="msg"></div>
   </div>
+  <div class="debug" id="debug"></div>
   <script>
     // Troque pelos seus dados do Supabase
     const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
+    const SUPABASE_ANON_KEY = 'SUA-ANON-KEY';
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Função para logar no console e na página
+    function logDebug(...args) {
+      console.log(...args);
+      const debugDiv = document.getElementById('debug');
+      debugDiv.innerHTML += args.map(a => 
+        (typeof a === 'object' ? `<pre>${JSON.stringify(a, null, 2)}</pre>` : a)
+      ).join(' ') + '<br>';
+    }
+
+    // Loga a URL completa e parâmetros
+    logDebug("URL completa:", window.location.href);
+    logDebug("window.location.search:", window.location.search);
+    logDebug("window.location.hash:", window.location.hash);
+
+    // Extrai e loga parâmetros do hash
+    if (window.location.hash) {
+      const hashParams = {};
+      window.location.hash.substring(1).split('&').forEach(function (item) {
+        const [key, value] = item.split('=');
+        hashParams[key] = decodeURIComponent(value || '');
+      });
+      logDebug("Parâmetros do hash:", hashParams);
+    }
+
+    // Loga a sessão atual do Supabase
+    supabase.auth.getSession().then(({ data, error }) => {
+      logDebug("Sessão atual do Supabase:", data, error);
+    });
 
     document.getElementById('reset-form').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -87,11 +130,13 @@
       if (password !== confirmPassword) {
         msgDiv.textContent = 'As senhas não coincidem.';
         msgDiv.classList.add('error');
+        logDebug("Erro: As senhas não coincidem.");
         return;
       }
 
       try {
         const { data, error } = await supabase.auth.updateUser({ password });
+        logDebug("Resultado do updateUser:", data, error);
         if (error) {
           msgDiv.textContent = 'Erro: ' + error.message;
           msgDiv.classList.add('error');
@@ -101,6 +146,7 @@
       } catch (err) {
         msgDiv.textContent = 'Erro inesperado. Tente novamente.';
         msgDiv.classList.add('error');
+        logDebug("Erro inesperado:", err);
       }
     });
   </script>
