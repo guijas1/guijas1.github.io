@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Redefinir Senha - Reporte Diário ONS</title>
+  <title>Ação de Conta - Reporte Diário ONS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -77,42 +77,26 @@
       color: #64748b;
       font-size: 12px;
     }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Redefinir Senha</h2>
-    <p style="color: #94a3b8; margin-bottom: 24px;">
-      Digite sua nova senha nos campos abaixo:
-    </p>
-    
-    <form id="reset-form">
-      <label for="password">Nova senha:</label>
-      <input type="password" id="password" name="password" required minlength="6" placeholder="Digite sua nova senha">
-      
-      <label for="confirm-password">Confirmar nova senha:</label>
-      <input type="password" id="confirm-password" name="confirm-password" required minlength="6" placeholder="Confirme sua nova senha">
-      
-      <button type="submit" class="btn">Redefinir Senha</button>
-    </form>
-    
+  <div class="container" id="main-container">
+    <h2 id="main-title">Ação de Conta</h2>
+    <div id="main-content"></div>
     <div id="msg" class="msg" style="display: none;"></div>
-    
     <div class="footer">
       <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
     </div>
   </div>
-
   <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
 
-    // Inicializa o Supabase
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Função para mostrar mensagens
     function showMessage(text, isError = false) {
       const msgDiv = document.getElementById('msg');
       msgDiv.textContent = text;
@@ -121,37 +105,167 @@
       msgDiv.classList.add(isError ? 'error' : 'success');
     }
 
-    // Processa o formulário
-    document.getElementById('reset-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-      const submitBtn = e.target.querySelector('button[type="submit"]');
+    function hideMessage() {
+      const msgDiv = document.getElementById('msg');
+      msgDiv.style.display = 'none';
+      msgDiv.textContent = '';
+      msgDiv.classList.remove('error', 'success');
+    }
 
-      if (password !== confirmPassword) {
-        showMessage('As senhas não coincidem.', true);
-        return;
-      }
+    function getHashParams() {
+      const hash = window.location.hash.substring(1);
+      const params = {};
+      hash.split('&').forEach(part => {
+        const [key, value] = part.split('=');
+        if (key) params[key] = decodeURIComponent(value || '');
+      });
+      return params;
+    }
 
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Redefinindo...';
-        
-        const { data, error } = await supabaseClient.auth.updateUser({ password });
-        
-        if (error) {
-          showMessage('Erro: ' + error.message, true);
-        } else {
-          showMessage('✅ Senha redefinida com sucesso! Você já pode acessar o sistema.');
-          document.getElementById('reset-form').style.display = 'none';
+    function renderRecovery() {
+      document.getElementById('main-title').textContent = "Redefinir Senha";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #94a3b8; margin-bottom: 24px;">
+          Digite sua nova senha nos campos abaixo:
+        </p>
+        <form id="reset-form">
+          <label for="password">Nova senha:</label>
+          <input type="password" id="password" name="password" required minlength="6" placeholder="Digite sua nova senha">
+          <label for="confirm-password">Confirmar nova senha:</label>
+          <input type="password" id="confirm-password" name="confirm-password" required minlength="6" placeholder="Confirme sua nova senha">
+          <button type="submit" class="btn">Redefinir Senha</button>
+        </form>
+      `;
+      hideMessage();
+      document.getElementById('reset-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        if (password !== confirmPassword) {
+          showMessage('As senhas não coincidem.', true);
+          return;
         }
-      } catch (err) {
-        showMessage('Erro inesperado. Tente novamente.', true);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Redefinir Senha';
+        try {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Redefinindo...';
+          const { error } = await supabaseClient.auth.updateUser({ password });
+          if (error) {
+            showMessage('Erro: ' + error.message, true);
+          } else {
+            showMessage('✅ Senha redefinida com sucesso! Você já pode acessar o sistema.');
+            document.getElementById('reset-form').style.display = 'none';
+          }
+        } catch (err) {
+          showMessage('Erro inesperado. Tente novamente.', true);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Redefinir Senha';
+        }
+      });
+    }
+
+    function renderSignup() {
+      document.getElementById('main-title').textContent = "Confirmação de E-mail";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #10b981; margin-bottom: 24px;">
+          ✅ Seu e-mail foi confirmado com sucesso!<br>
+          Agora você já pode acessar o sistema normalmente.
+        </p>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
+      `;
+      hideMessage();
+    }
+
+    function renderInvite() {
+      document.getElementById('main-title').textContent = "Convite para o Sistema";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #38bdf8; margin-bottom: 24px;">
+          Você recebeu um convite para acessar o Reporte Diário ONS.<br>
+          Clique abaixo para baixar o aplicativo ou acessar o sistema.
+        </p>
+        <a href="https://seu-link-de-download.com" class="btn" target="_blank">Baixar Aplicativo</a>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
+      `;
+      hideMessage();
+    }
+
+    function renderMagicLink() {
+      document.getElementById('main-title').textContent = "Login Instantâneo";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #10b981; margin-bottom: 24px;">
+          ✅ Login realizado com sucesso via Magic Link!<br>
+          Você já pode acessar o sistema.
+        </p>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Sistema</a>
+      `;
+      hideMessage();
+    }
+
+    function renderEmailChange() {
+      document.getElementById('main-title').textContent = "E-mail Alterado";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #10b981; margin-bottom: 24px;">
+          ✅ Seu endereço de e-mail foi alterado com sucesso!
+        </p>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
+      `;
+      hideMessage();
+    }
+
+    function renderReauthentication() {
+      document.getElementById('main-title').textContent = "Reautenticação";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #38bdf8; margin-bottom: 24px;">
+          Por segurança, você foi reautenticado.<br>
+          Continue usando o sistema normalmente.
+        </p>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Sistema</a>
+      `;
+      hideMessage();
+    }
+
+    function renderUnknown() {
+      document.getElementById('main-title').textContent = "Ação Desconhecida";
+      document.getElementById('main-content').innerHTML = `
+        <p style="color: #ef4444; margin-bottom: 24px;">
+          O link acessado é inválido ou expirou.<br>
+          Solicite um novo link ou entre em contato com o suporte.
+        </p>
+        <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
+      `;
+      hideMessage();
+    }
+
+    function main() {
+      const params = getHashParams();
+      const type = (params.type || '').toLowerCase();
+
+      switch (type) {
+        case 'recovery':
+          renderRecovery();
+          break;
+        case 'signup':
+          renderSignup();
+          break;
+        case 'invite':
+          renderInvite();
+          break;
+        case 'magiclink':
+          renderMagicLink();
+          break;
+        case 'email_change':
+          renderEmailChange();
+          break;
+        case 'reauthentication':
+          renderReauthentication();
+          break;
+        default:
+          renderUnknown();
       }
-    });
+    }
+
+    main();
   </script>
 </body>
 </html>
