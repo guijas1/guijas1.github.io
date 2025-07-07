@@ -84,12 +84,6 @@
   </div>
   <div class="debug" id="debug"></div>
   <script>
-    // Troque pelos seus dados do Supabase
-    const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
-
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     // Função para logar no console e na página
     function logDebug(...args) {
       console.log(...args);
@@ -114,8 +108,16 @@
       logDebug("Parâmetros do hash:", hashParams);
     }
 
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
+
+    // Inicializa o Supabase corretamente
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Loga a sessão atual do Supabase
-    supabase.auth.getSession().then(({ data, error }) => {
+    supabaseClient.auth.getSession().then(({ data, error }) => {
       logDebug("Sessão atual do Supabase:", data, error);
     });
 
@@ -135,7 +137,7 @@
       }
 
       try {
-        const { data, error } = await supabase.auth.updateUser({ password });
+        const { data, error } = await supabaseClient.auth.updateUser({ password });
         logDebug("Resultado do updateUser:", data, error);
         if (error) {
           msgDiv.textContent = 'Erro: ' + error.message;
