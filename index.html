@@ -2,89 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Redefinir Senha - Reporte Diário ONS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha - ONS</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    body {
-      font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
-      background-color: #0f172a;
-      color: #e2e8f0;
-      padding: 32px;
-    }
-    .container {
-      background: #1e293b;
-      border-radius: 8px;
-      padding: 32px;
-      max-width: 480px;
-      margin: auto;
-      box-shadow: 0 4px 24px #0003;
-    }
-    h2 {
-      color: #38bdf8;
-      margin-bottom: 24px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      background: #38bdf8;
-      color: #0f172a;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-family: inherit;
-      margin-top: 24px;
-      letter-spacing: 1px;
-      border: none;
-      cursor: pointer;
-    }
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin: 12px 0 24px 0;
-      border-radius: 6px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #e2e8f0;
-      font-size: 16px;
-    }
-    .msg {
-      margin-top: 18px;
-      color: #38bdf8;
-    }
-    .error {
-      color: #ef4444;
-    }
-    .debug {
-      background: #0f172a;
-      color: #94a3b8;
-      font-size: 13px;
-      margin-top: 32px;
-      padding: 16px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-      word-break: break-all;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Redefinir Senha</h2>
-    <form id="reset-form">
-      <label for="password">Nova senha:</label>
-      <input type="password" id="password" name="password" required minlength="6" placeholder="Digite sua nova senha">
-      <label for="confirm-password">Confirmar nova senha:</label>
-      <input type="password" id="confirm-password" name="confirm-password" required minlength="6" placeholder="Confirme sua nova senha">
-      <button type="submit" class="btn">Redefinir</button>
-    </form>
-    <div id="msg" class="msg"></div>
-  </div>
-  <div class="debug" id="debug"></div>
+  <h2>Redefinir Senha</h2>
+  <form id="reset-form">
+    <input type="password" id="password" placeholder="Nova senha" required minlength="6">
+    <input type="password" id="confirm-password" placeholder="Confirmar nova senha" required minlength="6">
+    <button type="submit">Redefinir</button>
+  </form>
+  <div id="msg"></div>
+  <div id="debug"></div>
   <script>
-    // Função para logar no console e na página
+    // Troque pelos seus dados do Supabase
+    const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     function logDebug(...args) {
       console.log(...args);
       const debugDiv = document.getElementById('debug');
@@ -93,30 +30,7 @@
       ).join(' ') + '<br>';
     }
 
-    // Loga a URL completa e parâmetros
-    logDebug("URL completa:", window.location.href);
-    logDebug("window.location.search:", window.location.search);
-    logDebug("window.location.hash:", window.location.hash);
-
-    // Extrai e loga parâmetros do hash
-    if (window.location.hash) {
-      const hashParams = {};
-      window.location.hash.substring(1).split('&').forEach(function (item) {
-        const [key, value] = item.split('=');
-        hashParams[key] = decodeURIComponent(value || '');
-      });
-      logDebug("Parâmetros do hash:", hashParams);
-    }
-
-    // Configuração do Supabase
-    const SUPABASE_URL = 'https://nipdcwstzslbwgixdpmz.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcGRjd3N0enNsYndnaXhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTMwMzEsImV4cCI6MjA2NzEyOTAzMX0.l5sq2elzhx1OaP91r9inOTKkLGfaiOgP4MMV-7XA6Ro';
-
-    // Inicializa o Supabase corretamente
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Loga a sessão atual do Supabase
+    // Loga a sessão ao carregar
     supabaseClient.auth.getSession().then(({ data, error }) => {
       logDebug("Sessão atual do Supabase:", data, error);
     });
@@ -127,12 +41,9 @@
       const confirmPassword = document.getElementById('confirm-password').value;
       const msgDiv = document.getElementById('msg');
       msgDiv.textContent = '';
-      msgDiv.classList.remove('error');
 
       if (password !== confirmPassword) {
         msgDiv.textContent = 'As senhas não coincidem.';
-        msgDiv.classList.add('error');
-        logDebug("Erro: As senhas não coincidem.");
         return;
       }
 
@@ -141,13 +52,11 @@
         logDebug("Resultado do updateUser:", data, error);
         if (error) {
           msgDiv.textContent = 'Erro: ' + error.message;
-          msgDiv.classList.add('error');
         } else {
-          msgDiv.textContent = 'Senha redefinida com sucesso! Você já pode acessar o sistema.';
+          msgDiv.textContent = 'Senha redefinida com sucesso!';
         }
       } catch (err) {
         msgDiv.textContent = 'Erro inesperado. Tente novamente.';
-        msgDiv.classList.add('error');
         logDebug("Erro inesperado:", err);
       }
     });
