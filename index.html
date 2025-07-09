@@ -4,172 +4,20 @@
   <meta charset="UTF-8">
   <title>Reporte Diário ONS - Rollout N2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
-      background: linear-gradient(120deg, #0f172a 0%, #1e293b 100%);
-      color: #e2e8f0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    @keyframes gradient-x {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
-    .hero {
-      max-width: 700px;
-      margin: 60px auto 0 auto;
-      background: rgba(30,41,59,0.98);
-      border-radius: 18px;
-      box-shadow: 0 8px 32px #0005;
-      padding: 48px 32px 32px 32px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-size: 2.5rem;
-      color: #38bdf8;
-      margin-bottom: 18px;
-      letter-spacing: 1px;
-    }
-    .hero p {
-      color: #94a3b8;
-      font-size: 1.15rem;
-      margin-bottom: 32px;
-      line-height: 1.6;
-    }
-    .cta-btn {
-      display: inline-block;
-      padding: 16px 36px;
-      background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
-      color: #0f172a;
-      font-weight: bold;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      text-decoration: none;
-      margin-top: 18px;
-      letter-spacing: 1px;
-      transition: background 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-    .cta-btn:hover {
-      background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%);
-    }
-    .section {
-      max-width: 700px;
-      margin: 32px auto 0 auto;
-      background: rgba(30,41,59,0.92);
-      border-radius: 14px;
-      box-shadow: 0 4px 16px #0003;
-      padding: 32px 24px;
-    }
-    .section h2 {
-      color: #38bdf8;
-      margin-bottom: 16px;
-      font-size: 1.4rem;
-      letter-spacing: 1px;
-    }
-    .section ul {
-      color: #e2e8f0;
-      margin: 0 0 0 18px;
-      padding: 0;
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-    .analistas {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 18px;
-      margin-top: 18px;
-    }
-    .analista-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 16px 22px;
-      min-width: 180px;
-      text-align: left;
-      color: #e2e8f0;
-      font-size: 1rem;
-      box-shadow: 0 2px 8px #0002;
-    }
-    .analista-card strong {
-      color: #38bdf8;
-    }
-    .footer {
-      text-align: center;
-      margin: 48px 0 16px 0;
-      color: #64748b;
-      font-size: 13px;
-    }
-    /* Supabase flows */
-    .container {
-      background: #1e293b;
-      border-radius: 8px;
-      padding: 32px;
-      max-width: 480px;
-      margin: 60px auto 0 auto;
-      box-shadow: 0 4px 24px #0003;
-    }
-    h2 {
-      color: #38bdf8;
-      margin-bottom: 24px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      background: #38bdf8;
-      color: #0f172a;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-family: inherit;
-      margin-top: 24px;
-      letter-spacing: 1px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin: 12px 0 24px 0;
-      border-radius: 6px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #e2e8f0;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #94a3b8;
-      font-size: 14px;
-    }
-    .msg {
-      margin-top: 18px;
-      color: #38bdf8;
-      text-align: center;
-      padding: 12px;
-      border-radius: 6px;
-    }
-    .error {
-      color: #ef4444;
-      background: rgba(239, 68, 68, 0.1);
-    }
-    .success {
-      color: #10b981;
-      background: rgba(16, 185, 129, 0.1);
-    }
-    @media (max-width: 800px) {
-      .hero, .section { max-width: 98vw; }
-      .analista-card { min-width: 120px; font-size: 0.95rem; }
-      .container { max-width: 98vw; }
+    .animate-gradient-x {
+      background-size: 200% 200%;
+      animation: gradient-x 3s ease-in-out infinite;
     }
   </style>
 </head>
-<body>
+<body class="font-mono bg-gradient-to-br from-slate-950 to-slate-800 text-slate-200 min-h-screen flex flex-col">
   <div id="app"></div>
   <script>
     // Supabase config
@@ -178,7 +26,7 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Util
+    // Utils
     function getHashParams() {
       const hash = window.location.hash.substring(1);
       const params = {};
@@ -193,8 +41,7 @@
       if (msgDiv) {
         msgDiv.textContent = text;
         msgDiv.style.display = 'block';
-        msgDiv.classList.remove('error', 'success');
-        msgDiv.classList.add(isError ? 'error' : 'success');
+        msgDiv.className = `mt-4 text-center p-3 rounded-lg ${isError ? 'text-red-500 bg-red-500/10' : 'text-green-500 bg-green-500/10'}`;
       }
     }
     function hideMessage() {
@@ -202,73 +49,130 @@
       if (msgDiv) {
         msgDiv.style.display = 'none';
         msgDiv.textContent = '';
-        msgDiv.classList.remove('error', 'success');
       }
+    }
+    // Typing animation for title
+    function typingEffect(elementId, text, speed = 80) {
+      let i = 0;
+      function type() {
+        if (i <= text.length) {
+          document.getElementById(elementId).textContent = text.slice(0, i++);
+          setTimeout(type, speed);
+        }
+      }
+      type();
     }
 
     // Landing page
     function renderHome() {
       document.getElementById('app').innerHTML = `
-        <div class="hero">
-          <h1>Reporte Diário ONS</h1>
-          <p>
-            Aplicação desenvolvida por <strong>Guilherme Tavares (guijas1)</strong> para centralizar e padronizar o recebimento dos reportes diários dos analistas do ONS.<br>
-            Proporciona visibilidade, rastreabilidade e agilidade no acompanhamento do rollout da nova sala de controle, conectando gestão e equipes técnicas em tempo real.
-          </p>
-          <a href="https://seu-link-de-download.com" class="cta-btn" target="_blank">Baixar Aplicativo</a>
-        </div>
-        <div class="section">
-          <h2>Proposta da Aplicação</h2>
-          <ul>
-            <li>Centralizar o recebimento dos reportes diários dos analistas, facilitando o acompanhamento do progresso do rollout em cada localidade.</li>
-            <li>Padronizar o formato dos reportes, tornando a análise e o repasse das informações mais ágeis e confiáveis.</li>
-            <li>Oferecer visibilidade em tempo real do que está sendo feito, permitindo identificar rapidamente gargalos, pendências ou avanços relevantes.</li>
-            <li>Facilitar a comunicação entre os analistas e a gestão, reduzindo ruídos e retrabalho.</li>
-            <li>Preparar a base para futuras integrações, como a conexão com o Supabase e modularização do código.</li>
-          </ul>
-        </div>
-        <div class="section">
-          <h2>Analistas Responsáveis</h2>
-          <div class="analistas">
-            <div class="analista-card"><strong>Rio de Janeiro:</strong><br>Guilherme e Gabriel</div>
-            <div class="analista-card"><strong>Recife:</strong><br>Julio</div>
-            <div class="analista-card"><strong>Santa Catarina:</strong><br>Sileno</div>
-            <div class="analista-card"><strong>Brasília:</strong><br>Alessandro</div>
+        <div id="hero" class="opacity-0 transition-opacity duration-1000">
+          <div class="relative p-1 rounded-2xl bg-gradient-to-r from-sky-400 via-sky-500 to-sky-400 animate-gradient-x mb-8">
+            <div class="bg-slate-800 rounded-2xl p-12 text-center">
+              <h1 id="typing-title" class="text-4xl font-bold text-sky-400 mb-6 tracking-wide min-h-[48px]"></h1>
+              <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                Aplicação desenvolvida por <strong class="text-slate-200">Guilherme Tavares (guijas1)</strong> para centralizar e padronizar o recebimento dos reportes diários dos analistas do ONS.<br><br>
+                Proporciona visibilidade, rastreabilidade e agilidade no acompanhamento do rollout da nova sala de controle, conectando gestão e equipes técnicas em tempo real.
+              </p>
+              <a href="https://seu-link-de-download.com" target="_blank"
+                 class="relative inline-block px-9 py-4 bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 font-bold rounded-lg text-lg tracking-wide transition-all duration-200 hover:from-sky-500 hover:to-sky-400 hover:shadow-lg animate-pulse overflow-hidden">
+                <span class="relative z-10">Baixar Aplicativo</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="max-w-3xl mx-auto mt-8 bg-slate-800/90 rounded-xl shadow-lg p-8 opacity-0 transition-opacity duration-1000" id="section-proposta">
+            <h2 class="text-xl font-bold text-sky-400 mb-4 tracking-wide">Proposta da Aplicação</h2>
+            <ul class="text-slate-200 space-y-3 leading-relaxed ml-5">
+              <li>• Centralizar o recebimento dos reportes diários dos analistas, facilitando o acompanhamento do progresso do rollout em cada localidade.</li>
+              <li>• Padronizar o formato dos reportes, tornando a análise e o repasse das informações mais ágeis e confiáveis.</li>
+              <li>• Oferecer visibilidade em tempo real do que está sendo feito, permitindo identificar rapidamente gargalos, pendências ou avanços relevantes.</li>
+              <li>• Facilitar a comunicação entre os analistas e a gestão, reduzindo ruídos e retrabalho.</li>
+              <li>• Preparar a base para futuras integrações, como a conexão com o Supabase e modularização do código.</li>
+            </ul>
+          </div>
+
+          <div class="max-w-3xl mx-auto mt-8 bg-slate-800/90 rounded-xl shadow-lg p-8 opacity-0 transition-opacity duration-1000" id="section-analistas">
+            <h2 class="text-xl font-bold text-sky-400 mb-6 tracking-wide">Analistas Responsáveis</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-950 border border-slate-600 rounded-lg p-4 text-left transition-shadow hover:shadow-sky-400/40 hover:shadow-lg">
+                <strong class="text-sky-400">Rio de Janeiro:</strong><br>
+                <span class="text-slate-200">Guilherme e Gabriel</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-600 rounded-lg p-4 text-left transition-shadow hover:shadow-sky-400/40 hover:shadow-lg">
+                <strong class="text-sky-400">Recife:</strong><br>
+                <span class="text-slate-200">Julio</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-600 rounded-lg p-4 text-left transition-shadow hover:shadow-sky-400/40 hover:shadow-lg">
+                <strong class="text-sky-400">Santa Catarina:</strong><br>
+                <span class="text-slate-200">Sileno</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-600 rounded-lg p-4 text-left transition-shadow hover:shadow-sky-400/40 hover:shadow-lg">
+                <strong class="text-sky-400">Brasília:</strong><br>
+                <span class="text-slate-200">Alessandro</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-12 mb-4 text-slate-500 text-sm opacity-0 transition-opacity duration-1000" id="footer">
+            Equipe Rollout N2 - Reporte Suporte Diário ONS
           </div>
         </div>
-        <div class="footer">
-          Equipe Rollout N2 - Reporte Suporte Diário ONS
-        </div>
       `;
+      // Fade-in animation
+      setTimeout(() => {
+        document.getElementById('hero')?.classList.add('opacity-100');
+        document.getElementById('section-proposta')?.classList.add('opacity-100');
+        document.getElementById('section-analistas')?.classList.add('opacity-100');
+        document.getElementById('footer')?.classList.add('opacity-100');
+      }, 100);
+      // Typing effect
+      typingEffect('typing-title', 'Reporte Diário ONS');
     }
 
     // Supabase flows
     function renderRecovery() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Redefinir Senha</h2>
-          <p style="color: #94a3b8; margin-bottom: 24px;">
-            Digite sua nova senha nos campos abaixo:
-          </p>
-          <form id="reset-form">
-            <label for="password">Nova senha:</label>
-            <input type="password" id="password" name="password" required minlength="6" placeholder="Digite sua nova senha">
-            <label for="confirm-password">Confirmar nova senha:</label>
-            <input type="password" id="confirm-password" name="confirm-password" required minlength="6" placeholder="Confirme sua nova senha">
-            <button type="submit" class="btn">Redefinir Senha</button>
-          </form>
-          <div id="msg" class="msg" style="display: none;"></div>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="recovery-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Redefinir Senha</h2>
+            <p class="text-slate-400 mb-6">
+              Digite sua nova senha nos campos abaixo:
+            </p>
+            <form id="reset-form" class="space-y-4">
+              <div>
+                <label for="password" class="block mb-2 text-slate-400 text-sm">Nova senha:</label>
+                <input type="password" id="password" name="password" required minlength="6"
+                       placeholder="Digite sua nova senha"
+                       class="w-full p-3 rounded-lg border border-slate-600 bg-slate-950 text-slate-200 focus:border-sky-400 focus:outline-none">
+              </div>
+              <div>
+                <label for="confirm-password" class="block mb-2 text-slate-400 text-sm">Confirmar nova senha:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="6"
+                       placeholder="Confirme sua nova senha"
+                       class="w-full p-3 rounded-lg border border-slate-600 bg-slate-950 text-slate-200 focus:border-sky-400 focus:outline-none">
+              </div>
+              <button type="submit"
+                      class="w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide hover:bg-sky-500 transition-colors">
+                Redefinir Senha
+              </button>
+            </form>
+            <div id="msg" style="display: none;"></div>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
+      setTimeout(() => {
+        document.getElementById('recovery-box')?.classList.add('opacity-100');
+      }, 100);
       hideMessage();
       document.getElementById('reset-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
-        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const submitBtn = e.target.querySelector('button[type=\"submit\"]');
         if (password !== confirmPassword) {
           showMessage('As senhas não coincidem.', true);
           return;
@@ -291,100 +195,143 @@
         }
       });
     }
+
     function renderSignup() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Confirmação de E-mail</h2>
-          <p style="color: #10b981; margin-bottom: 24px;">
-            ✅ Seu e-mail foi confirmado com sucesso!<br>
-            Agora você já pode acessar o sistema normalmente.
-          </p>
-          <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="signup-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Confirmação de E-mail</h2>
+            <p class="text-green-500 mb-6">
+              ✅ Seu e-mail foi confirmado com sucesso!<br>
+              Agora você já pode acessar o sistema normalmente.
+            </p>
+            <a href="/" class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors">
+              Ir para o Login
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('signup-box')?.classList.add('opacity-100');
+      }, 100);
     }
+
     function renderInvite() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Convite para o Sistema</h2>
-          <p style="color: #38bdf8; margin-bottom: 24px;">
-            Você recebeu um convite para acessar o Reporte Diário ONS.<br>
-            Baixe o aplicativo oficial para continuar:
-          </p>
-          <a href="https://seu-link-de-download.com" class="btn" target="_blank">Baixar Aplicativo</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="invite-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Convite para o Sistema</h2>
+            <p class="text-sky-400 mb-6">
+              Você recebeu um convite para acessar o Reporte Diário ONS.<br>
+              Baixe o aplicativo oficial para continuar:
+            </p>
+            <a href="https://seu-link-de-download.com" target="_blank"
+               class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors animate-pulse">
+              Baixar Aplicativo
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('invite-box')?.classList.add('opacity-100');
+      }, 100);
     }
+
     function renderMagicLink() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Login Instantâneo</h2>
-          <p style="color: #10b981; margin-bottom: 24px;">
-            ✅ Login realizado com sucesso via Magic Link!<br>
-            Você já pode acessar o sistema.
-          </p>
-          <a href="/" class="btn" style="margin-top: 12px;">Ir para o Sistema</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="magiclink-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Login Instantâneo</h2>
+            <p class="text-green-500 mb-6">
+              ✅ Login realizado com sucesso via Magic Link!<br>
+              Você já pode acessar o sistema.
+            </p>
+            <a href="/" class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors">
+              Ir para o Sistema
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('magiclink-box')?.classList.add('opacity-100');
+      }, 100);
     }
+
     function renderEmailChange() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>E-mail Alterado</h2>
-          <p style="color: #10b981; margin-bottom: 24px;">
-            ✅ Seu endereço de e-mail foi alterado com sucesso!
-          </p>
-          <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="emailchange-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">E-mail Alterado</h2>
+            <p class="text-green-500 mb-6">
+              ✅ Seu endereço de e-mail foi alterado com sucesso!
+            </p>
+            <a href="/" class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors">
+              Ir para o Login
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('emailchange-box')?.classList.add('opacity-100');
+      }, 100);
     }
+
     function renderReauthentication() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Reautenticação</h2>
-          <p style="color: #38bdf8; margin-bottom: 24px;">
-            Por segurança, você foi reautenticado.<br>
-            Continue usando o sistema normalmente.
-          </p>
-          <a href="/" class="btn" style="margin-top: 12px;">Ir para o Sistema</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="reauth-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Reautenticação</h2>
+            <p class="text-sky-400 mb-6">
+              Por segurança, você foi reautenticado.<br>
+              Continue usando o sistema normalmente.
+            </p>
+            <a href="/" class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors">
+              Ir para o Sistema
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('reauth-box')?.classList.add('opacity-100');
+      }, 100);
     }
+
     function renderUnknown() {
       document.getElementById('app').innerHTML = `
-        <div class="container">
-          <h2>Ação Desconhecida</h2>
-          <p style="color: #ef4444; margin-bottom: 24px;">
-            O link acessado é inválido ou expirou.<br>
-            Solicite um novo link ou entre em contato com o suporte.
-          </p>
-          <a href="/" class="btn" style="margin-top: 12px;">Ir para o Login</a>
-          <div class="footer">
-            <span style="color: #38bdf8;">Equipe Rollout N2 - Reporte Suporte Diário ONS</span>
+        <div class="flex flex-col items-center justify-center min-h-screen">
+          <div class="max-w-md w-full bg-slate-800 rounded-lg shadow-2xl p-8 mt-12 opacity-0 transition-opacity duration-1000" id="unknown-box">
+            <h2 class="text-2xl font-bold text-sky-400 mb-6">Ação Desconhecida</h2>
+            <p class="text-red-500 mb-6">
+              O link acessado é inválido ou expirou.<br>
+              Solicite um novo link ou entre em contato com o suporte.
+            </p>
+            <a href="/" class="block w-full p-3 bg-sky-400 text-slate-950 font-bold rounded-lg tracking-wide text-center hover:bg-sky-500 transition-colors">
+              Ir para o Login
+            </a>
+            <div class="text-center mt-8 text-slate-500 text-sm">
+              Equipe Rollout N2 - Reporte Suporte Diário ONS
+            </div>
           </div>
         </div>
       `;
-      hideMessage();
+      setTimeout(() => {
+        document.getElementById('unknown-box')?.classList.add('opacity-100');
+      }, 100);
     }
 
     // Main router
@@ -421,7 +368,6 @@
           renderUnknown();
       }
     }
-
     main();
   </script>
 </body>
